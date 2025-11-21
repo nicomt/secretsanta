@@ -51,6 +51,13 @@ export function ParticipantsList({
     rules: [] 
   }];
 
+  const nameCounts = participantsList.reduce((acc, p) => {
+    if (p.name) {
+      acc[p.name] = (acc[p.name] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <div className="space-y-4">
       <p className="mt-1 text-xs text-gray-500">
@@ -64,6 +71,7 @@ export function ParticipantsList({
             participant={participant}
             participantIndex={index}
             isLast={index === Object.keys(participants).length}
+            error={nameCounts[participant.name] > 1 ? t('errors.duplicateName', { name: participant.name }) : undefined}
             onNameChange={(name) => updateParticipant(participant.id, name)}
             onOpenRules={() => onOpenRules(participant.id)}
             onRemove={() => removeParticipant(participant.id)}
